@@ -8,7 +8,6 @@ public class Spawn : MonoBehaviour
     [SerializeField] private GameObject _enemy;
 
     private Transform[] _points;
-    private int _currentPoint;
     private float _waitingTime = 2f;
 
     private void Start()
@@ -20,23 +19,18 @@ public class Spawn : MonoBehaviour
             _points[i] = _spawnPoints.GetChild(i);
         }
 
-        StartCoroutine(SpawnEnemy());
-    }
-
-    private void Update()
-    {
-        if (_currentPoint >= _points.Length)
+        if (_enemy.TryGetComponent<Enemy>(out Enemy enemy))
         {
-            StopCoroutine(SpawnEnemy());
-        }
+            StartCoroutine(SpawnEnemy());
+        } 
     }
 
     private IEnumerator SpawnEnemy()
     {
         for (int i = 0; i < _points.Length; i++)
         {
-            GameObject newEnemy = Instantiate(_enemy, new Vector3(_points[i].position.x, _points[i].position.y, _points[i].position.z), Quaternion.identity);
-            _currentPoint++;
+            GameObject newEnemy = Instantiate(_enemy, _points[i].position, Quaternion.identity);
+
             yield return new WaitForSeconds(_waitingTime);
         } 
     }
