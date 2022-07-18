@@ -5,10 +5,10 @@ using UnityEngine;
 public class Spawn : MonoBehaviour
 {
     [SerializeField] private Transform _spawnPoints;
-    [SerializeField] private GameObject _enemy;
+    [SerializeField] private Enemy _enemy;
 
     private Transform[] _points;
-    private float _waitingTime = 2f;
+    private WaitForSeconds _waitingTime = new WaitForSeconds(2);
 
     private void Start()
     {
@@ -19,19 +19,16 @@ public class Spawn : MonoBehaviour
             _points[i] = _spawnPoints.GetChild(i);
         }
 
-        if (_enemy.TryGetComponent<Enemy>(out Enemy enemy))
-        {
-            StartCoroutine(SpawnEnemy());
-        } 
+        StartCoroutine(SpawnEnemy());
     }
 
     private IEnumerator SpawnEnemy()
     {
         for (int i = 0; i < _points.Length; i++)
         {
-            GameObject newEnemy = Instantiate(_enemy, _points[i].position, Quaternion.identity);
+            GameObject newEnemy = Instantiate(_enemy.Model, _points[i].position, Quaternion.identity);
 
-            yield return new WaitForSeconds(_waitingTime);
+            yield return _waitingTime;
         } 
     }
 }
